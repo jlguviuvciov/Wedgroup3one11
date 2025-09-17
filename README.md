@@ -1,1 +1,422 @@
-# Wedgroup3one11
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- ✅ fix lỗi hiển thị nhỏ -->
+  <title>Group 3 👑</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fde4f2, #d6e4f9);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: linear-gradient(to right, #fde4f2, #d6e4f9);
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 200px;
+      background-color: #b6f7b0;
+    }
+    .suggestions {
+      position: absolute;
+      top: 35px;
+      left: 0;
+      background: white;
+      border: 1px solid #ccc;
+      width: 100%;
+      display: none;
+      z-index: 10;
+    }
+    .suggestions div {
+      padding: 5px;
+      cursor: pointer;
+      border-bottom: 1px solid #ddd;
+      background-color: #f9f9f9;
+      transition: background 0.3s;
+    }
+    .suggestions div:hover {
+      background-color: #d0f0c0;
+    }
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .divider {
+      height: 8px;
+      background: white;
+      margin: 0;
+    }
+    .menu {
+      display: none;
+      text-align: center;
+      padding: 10px;
+    }
+    .menu button {
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: #fcb1d1;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .menu button:hover {
+      background-color: #f88fb0;
+    }
+    .section {
+      display: none;
+      padding: 20px;
+    }
+    .section.active {
+      display: block;
+    }
+    .admin-tools input, .admin-tools textarea {
+      display: block;
+      margin: 5px auto;
+      padding: 8px;
+      width: 300px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .admin-tools button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #a1c4fd;
+      cursor: pointer;
+    }
+    .notice-item, .text-item, .image-item {
+      background: #fff;
+      margin: 5px auto;
+      padding: 10px;
+      width: 80%;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #loginArea {
+      text-align: center;
+      padding: 20px;
+    }
+    #loginArea input {
+      margin: 5px;
+      padding: 8px;
+      width: 200px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    #loginArea button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #fcb1d1;
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    #imageOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #imageOverlay img {
+      max-width: 90%;
+      max-height: 90%;
+    }
+    #imageOverlay span {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="loginArea">
+  <h2>Đăng nhập hệ thống nhóm 3 👑</h2>
+  <button onclick="showForm('member')">Tôi là thành viên</button>
+  <button onclick="showForm('admin')">Tôi là admin</button>
+
+  <div id="memberForm" style="display:none;">
+    <input type="text" id="memberName" placeholder="Tên thành viên">
+    <button onclick="loginMember()">Đăng nhập</button>
+    <div id="errorMember" class="error"></div>
+  </div>
+
+  <div id="adminForm" style="display:none;">
+    <input type="text" id="adminName" placeholder="Tên admin">
+    <input type="password" id="adminPass" placeholder="Mật khẩu">
+    <button onclick="loginAdmin()">Đăng nhập</button>
+    <div id="errorAdmin" class="error"></div>
+  </div>
+</div>
+
+<div id="mainContent" style="display:none;">
+  <div class="header">
+    <div class="logo">Group 3 👑</div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+      <div class="suggestions" id="suggestionsBox"></div>
+    </div>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="menu" id="menuBar">
+    <button onclick="showSection('home')">Trang Chủ</button>
+    <button onclick="showSection('notice')">Thông Báo-Trả Bài-Soạn Bài</button>
+    <button onclick="showSection('schedule')">Thời Khoá Biểu</button>
+    <button onclick="showSection('study')">Thời Gian Học</button>
+    <button onclick="showSection('account')">Tài Khoản</button>
+  </div>
+
+  <div id="home" class="section active">
+    <h2>Trang Chủ</h2>
+    <p>Chào mừng đến với website của nhóm 3! 👑</p>
+  </div>
+
+  <div id="notice" class="section">
+    <h2>Thông Báo-Trả Bài-Soạn Bài</h2>
+    <div id="noticeList"></div>
+    <div class="admin-tools" id="adminNotice" style="display:none;">
+      <input type="text" id="timeInput" placeholder="Thời gian đăng">
+      <input type="text" id="dateInput" placeholder="Thứ, ngày, tháng">
+      <textarea id="contentInput" rows="4" placeholder="Nội dung thông báo..."></textarea>
+      <button onclick="addNotice()">Đăng thông báo</button>
+    </div>
+  </div>
+
+  <div id="schedule" class="section">
+    <h2>Thời Khoá Biểu</h2>
+    <div id="imageList"></div>
+    <div class="admin-tools" id="adminImage" style="display:none;">
+      <input type="file" id="imageUpload" accept="image/*">
+      <button onclick="uploadImage()">Đăng ảnh</button>
+    </div>
+  </div>
+
+  <div id="study" class="section">
+    <h2>Thời Gian Học</h2>
+    <div id="textList"></div>
+    <div class="admin-tools" id="adminText" style="display:none;">
+      <textarea id="textInput" rows="4" placeholder="Nhập nội dung học tập..."></textarea>
+      <button onclick="submitText()">Gửi</button>
+    </div>
+  </div>
+
+  <div id="account" class="section">
+    <h2>Tài Khoản</h2>
+    <p>Thông tin tài khoản của bạn sẽ hiển thị tại đây.</p>
+  </div>
+</div>
+
+<div id="imageOverlay">
+  <span onclick="closeOverlay()">×</span>
+  <img id="overlayImg" src="">
+</div>
+
+<script>
+const members = [
+  "hồ hải đăng", "huệ", "mỹ linh", "như quỳnh",
+  "như ý", "truc phuong", "nhã quỳnh", "thúy an", "tuấn anh"
+];
+
+function showForm(role) {
+  document.getElementById("memberForm").style.display = role === "member" ? "block" : "none";
+  document.getElementById("adminForm").style.display = role === "admin" ? "block" : "none";
+}
+
+function loginMember() {
+  const name = document.getElementById("memberName").value.trim().toLowerCase();
+  if (members.includes(name)) {
+    localStorage.setItem("role", "member");
+    localStorage.setItem("username", name);
+    showMain();
+  } else {
+    document.getElementById("errorMember").textContent = "Tên không tồn tại trong nhóm!";
+  }
+}
+
+function loginAdmin() {
+  const name = document.getElementById("adminName").value.trim().toLowerCase();
+  const pass = document.getElementById("adminPass").value;
+  if (name === "tuấn anh" && pass === "!zxcvbnm..") {
+    localStorage.setItem("role", "admin");
+    localStorage.setItem("username", name);
+    showMain();
+  } else {
+    document.getElementById("errorAdmin").textContent = "Sai tên hoặc mật khẩu!";
+  }
+}
+
+function showMain() {
+  document.getElementById("loginArea").style.display = "none";
+  document.getElementById("mainContent").style.display = "block";
+
+  const role = localStorage.getItem("role");
+  if (role === "admin") {
+    document.getElementById("adminNotice").style.display = "block";
+    document.getElementById("adminImage").style.display = "block";
+    document.getElementById("adminText").style.display = "block";
+  }
+
+  renderNotices();
+  renderImages();
+  renderTexts();
+}
+
+function toggleMenu() {
+  const menu = document.getElementById("menuBar");
+  menu.style.display = menu.style.display === "none" ? "block" : "none";
+}
+
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+document.getElementById("searchInput").addEventListener("input", function() {
+  const val = this.value.trim().toLowerCase();
+  const box = document.getElementById("suggestionsBox");
+  box.innerHTML = "";
+  const suggestions = ["Trang Chủ", "Thông Báo-Trả Bài-Soạn Bài", "Thời Khoá Biểu", "Thời Gian Học", "Tài Khoản"];
+  if (val.startsWith("t")) {
+    suggestions.forEach(item => {
+      if (item.toLowerCase().startsWith("t")) {
+        const div = document.createElement("div");
+        div.textContent = item;
+        div.onclick = () => {
+          document.getElementById("searchInput").value = item;
+          box.style.display = "none";
+        };
+        box.appendChild(div);
+      }
+    });
+    box.style.display = "block";
+  } else {
+    box.style.display = "none";
+  }
+});
+
+function addNotice() {
+  const time = document.getElementById("timeInput").value.trim();
+  const date = document.getElementById("dateInput").value.trim();
+  const content = document.getElementById("contentInput").value.trim();
+  if (!time || !date || !content) return;
+
+  const notice = `${time} - ${date}: ${content}`;
+  let list = JSON.parse(localStorage.getItem("notices")) || [];
+  list.push(notice);
+  localStorage.setItem("notices", JSON.stringify(list));
+  renderNotices();
+  document.getElementById("timeInput").value = "";
+  document.getElementById("dateInput").value = "";
+  document.getElementById("contentInput").value = "";
+}
+
+function renderNotices() {
+  const container = document.getElementById("noticeList");
+  container.innerHTML = "";
+  const list = JSON.parse(localStorage.getItem("notices")) || [];
+  list.forEach((text, index) => {
+    const div = document.createElement("div");
+    div.className = "notice-item";
+    div.textContent = text;
+    div.onclick = () => {
+      list.splice(index, 1);
+      localStorage.setItem("notices", JSON.stringify(list));
+      renderNotices();
+    };
+    container.appendChild(div);
+  });
+}
+
+function uploadImage() {
+  const file = document.getElementById("imageUpload").files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    let imgs = JSON.parse(localStorage.getItem("images")) || [];
+    imgs.push(e.target.result);
+    localStorage.setItem("images", JSON.stringify(imgs));
+    renderImages();
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderImages() {
+  const container = document.getElementById("imageList");
+  container.innerHTML = "";
+  const imgs = JSON.parse(localStorage.getItem("images")) || [];
+  imgs.forEach((src, index) => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.style.maxWidth = "300px";
+    img.style.margin = "10px";
+    img.className = "image-item";
+    img.onclick = () => {
+      document.getElementById("overlayImg").src = src;
+      document.getElementById("imageOverlay").style.display = "flex";
+    };
+    container.appendChild(img);
+  });
+}
+
+function closeOverlay() {
+  document.getElementById("imageOverlay").style.display = "none";
+}
+
+function submitText() {
+  const text = document.getElementById("textInput").value.trim();
+  if (!text) return;
+  let texts = JSON.parse(localStorage.getItem("texts")) || [];
+  texts.push(text);
+  localStorage.setItem("texts", JSON.stringify(texts));
+  renderTexts();
+  document.getElementById("textInput").value = "";
+}
+
+function renderTexts() {
+  const container = document.getElementById("textList");
+  container.innerHTML = "";
+  const texts = JSON.parse(localStorage.getItem("texts")) || [];
+  texts.forEach((t, index) => {
+    const p = document.createElement("div");
+    p.className = "text-item";
+    p.textContent = t;
+    p.onclick = () => {
+      texts.splice(index, 1);
+      localStorage.setItem("texts", JSON.stringify(texts));
+      renderTexts();
+    };
+    container.appendChild(p);
+  });
+}
+</script>
+</body>
+</html>
